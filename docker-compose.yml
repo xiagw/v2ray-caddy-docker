@@ -1,0 +1,52 @@
+version: '3'
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  caddy:
+    driver: local
+  v2ray:
+    driver: local
+
+services:
+
+### caddy ##################################
+    caddy:
+      build:
+        context: ./caddy
+      volumes:
+        - ./caddy/Caddyfile:/etc/Caddyfile
+        - ./caddy/cert:/root/.caddy
+        - ./caddy/www:/srv
+      environment:
+        - CLOUDFLARE_EMAIL=fxiaxiaoyu@gmail.com
+        - CLOUDFLARE_API_KEY=your_api_key
+        - ACME_AGREE=true
+        - TZ=Asia/Shanghai
+      ports:
+        - "80:80"
+        - "443:443"
+      networks:
+        - frontend
+        - backend
+      depends_on:
+        - v2ray      
+      restart: always
+
+### v2ray ##################################
+    v2ray:
+      build:
+        context: ./v2ray
+      volumes:
+        - ./v2ray/config.json:/etc/v2ray/config.json
+      expose:
+        - "444"
+      networks:
+        - backend
+      depends_on:
+        - caddy      
+      restart: always

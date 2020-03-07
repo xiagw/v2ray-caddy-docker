@@ -1,0 +1,63 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 444,
+      "listen": "0.0.0.0",
+      "tag": "vmess-in",
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "40d0839f-bd90-45a3-8915-02428b54bf84",
+            "alterId": 64,
+            "email": "user1@host1"
+          },
+          {
+            "id": "6d70e92a-c143-47e4-96fc-e9c23c5df488",
+            "alterId": 64,
+            "email": "user2@host2"
+          },
+          {
+            "id": "14a3bded-7881-405f-8bcb-1e47dfa5af2b",
+            "alterId": 64,
+            "email": "user3@host3"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/adm/",
+          "headers": {}
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "AsIs",
+    "rules": [
+      {
+        "type": "field",
+        "inboundTag": [
+          "vmess-in"
+        ],
+        "outboundTag": "direct"
+      }
+    ]
+  }
+}
